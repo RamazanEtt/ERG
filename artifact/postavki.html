@@ -1,0 +1,889 @@
+<title>Поставки ERG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<style>
+/* Раскладка: липкая шапка, сводка, доска колонок-стадий с горизонтальной прокруткой; карточка проекта — боковая панель. */
+:root {
+  --bg: #f5f5f1;
+  --surface: #ffffff;
+  --surface-2: #ecece6;
+  --line: #e0dfd7;
+  --line-strong: #cdcbc1;
+  --text: #1a1c19;
+  --text-2: #5a5d55;
+  --text-3: #8b8d84;
+  --accent: #1f4d3a;
+  --accent-soft: #e1ede6;
+  --accent-text: #ffffff;
+  --danger: #b4321f;
+  --danger-soft: #fae8e4;
+  --warn: #8f6200;
+  --warn-soft: #f9efd6;
+  --scrim: rgb(12 14 10 / .3);
+  --shadow: 0 1px 2px rgb(20 22 15 / .06), 0 2px 8px rgb(20 22 15 / .04);
+  --shadow-pop: 0 10px 34px rgb(20 22 15 / .16), 0 1px 3px rgb(20 22 15 / .08);
+  --r: 10px;
+  --r-lg: 14px;
+  --font: "Onest", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --gutter-l: max(20px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(20px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121411; --surface: #1a1c19; --surface-2: #222520; --line: #2c2f2a; --line-strong: #3a3d37;
+    --text: #e9ebe4; --text-2: #a5a89f; --text-3: #777a71; --accent: #7cc6a0; --accent-soft: #1c2e25;
+    --accent-text: #0d1f16; --danger: #f08a78; --danger-soft: #3a1f1a; --warn: #e5b955; --warn-soft: #332914;
+    --scrim: rgb(0 0 0 / .5); --shadow: 0 1px 2px rgb(0 0 0 / .4); --shadow-pop: 0 12px 40px rgb(0 0 0 / .55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121411; --surface: #1a1c19; --surface-2: #222520; --line: #2c2f2a; --line-strong: #3a3d37;
+  --text: #e9ebe4; --text-2: #a5a89f; --text-3: #777a71; --accent: #7cc6a0; --accent-soft: #1c2e25;
+  --accent-text: #0d1f16; --danger: #f08a78; --danger-soft: #3a1f1a; --warn: #e5b955; --warn-soft: #332914;
+  --scrim: rgb(0 0 0 / .5); --shadow: 0 1px 2px rgb(0 0 0 / .4); --shadow-pop: 0 12px 40px rgb(0 0 0 / .55);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 var(--font); min-height: 100%; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-2); }
+.faint { color: var(--text-3); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 8px;
+  background: var(--surface); color: var(--text); font-weight: 500; white-space: nowrap;
+  transition-property: background-color, border-color, transform; transition-duration: 150ms; transition-timing-function: ease-out;
+}
+.btn:hover { background: var(--surface-2); }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.btn-primary:hover { background: var(--accent); filter: brightness(1.08); }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-danger { color: var(--danger); }
+.btn-danger.armed { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn-icon { width: 36px; padding: 0; }
+
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > span { font-size: 12px; color: var(--text-2); font-weight: 500; }
+.input, .select, .textarea {
+  width: 100%; min-height: 36px; padding: 7px 10px; border: 1px solid var(--line-strong); border-radius: 8px;
+  background: var(--surface); transition-property: border-color, box-shadow; transition-duration: 120ms;
+}
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input:disabled, .select:disabled, .textarea:disabled { background: var(--surface-2); color: var(--text-2); }
+.textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+.select { appearance: none; padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-3) 50%), linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
+  background-position: right 13px top 50%, right 9px top 50%; background-size: 4px 4px; background-repeat: no-repeat; }
+
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding-block: 12px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+.brand svg { width: 26px; height: 26px; flex: none; }
+.seg { display: inline-flex; padding: 2px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--line); }
+.seg button { min-height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--text-2); font-weight: 500;
+  transition-property: background-color, color; transition-duration: 120ms; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.top .search { flex: 1 1 220px; max-width: 340px; }
+.top .grow { flex: 1; }
+.top .select { width: auto; min-width: 150px; }
+.ro-badge { font-size: 12px; color: var(--text-2); padding: 4px 10px; border-radius: 999px; background: var(--surface-2); }
+
+.avatar { display: inline-block; flex: none; width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--surface-2); }
+.avatar.lg { width: 30px; height: 30px; }
+
+.stats { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; padding-block: 16px 4px; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.stat { display: grid; gap: 2px; min-width: 0; }
+.stat b { font-size: 20px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--text-2); }
+.stat.alert b { color: var(--danger); }
+.toggle { margin-left: auto; display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--text-2); }
+
+.board {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 1fr); gap: 12px;
+  padding-block: 16px 28px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  overflow-x: auto; scroll-snap-type: x proximity; overscroll-behavior-x: contain; scroll-padding-inline: 20px; align-items: start;
+}
+.col { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 10px; border-radius: var(--r-lg);
+  background: var(--surface-2); border: 1px solid transparent; scroll-snap-align: start;
+  transition-property: border-color, background-color; transition-duration: 120ms; }
+.col.drop { border-color: var(--accent); background: var(--accent-soft); }
+.col-head { display: flex; align-items: baseline; gap: 8px; padding: 2px 4px 4px; }
+.col-head h2 { margin: 0; font-size: 13px; font-weight: 600; }
+.col-head .count { color: var(--text-3); font-size: 12px; font-variant-numeric: tabular-nums; }
+.col-head .sum { margin-left: auto; color: var(--text-2); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.col-empty { padding: 14px 6px; text-align: center; color: var(--text-3); font-size: 12px; border: 1px dashed var(--line-strong); border-radius: var(--r); }
+.col-add { justify-content: flex-start; color: var(--text-3); min-height: 32px; }
+
+.card { display: grid; gap: 8px; text-align: left; width: 100%; padding: 12px; border-radius: var(--r);
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+  transition-property: transform, border-color, opacity; transition-duration: 150ms; transition-timing-function: ease-out; }
+.card:hover { border-color: var(--line-strong); }
+.card:active { transform: scale(.985); }
+.card.dragging { opacity: .45; }
+.card-client { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-title { font-weight: 500; line-height: 1.35; text-wrap: pretty; overflow-wrap: anywhere; }
+.card-next { font-size: 12px; color: var(--text-2); text-wrap: pretty; overflow-wrap: anywhere; }
+.card-next::before { content: "→ "; color: var(--text-3); }
+.card-foot { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); }
+.card-foot .amount { white-space: nowrap; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+.card-foot .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 500; white-space: nowrap;
+  background: var(--surface-2); color: var(--text-2); font-variant-numeric: tabular-nums; }
+.pill.late { background: var(--danger-soft); color: var(--danger); }
+.pill.soon { background: var(--warn-soft); color: var(--warn); }
+
+/* Восемь делений = восемь стадий поставки: видно, насколько далеко проект продвинулся. */
+.rail { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; }
+.rail i { height: 3px; border-radius: 2px; background: var(--line); }
+.rail i.on { background: var(--accent); }
+.rail.lost i.on { background: var(--text-3); }
+
+.list-wrap { padding-block: 16px 28px; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.table th { font-size: 12px; font-weight: 500; color: var(--text-2); background: var(--surface-2); white-space: nowrap; }
+.table th button { all: unset; cursor: pointer; }
+.table th button:focus-visible { outline: 2px solid var(--accent); }
+.table tr:last-child td { border-bottom: 0; }
+.table tbody tr { cursor: pointer; transition: background-color 100ms; }
+.table tbody tr:hover { background: var(--surface-2); }
+.table .r { text-align: right; }
+.table .t-title { font-weight: 500; }
+.stage-tag { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.stage-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); opacity: var(--o, 1); }
+
+.empty-state { display: grid; justify-items: center; gap: 10px; padding: 48px 16px; text-align: center; color: var(--text-2); }
+.empty-state h3 { margin: 0; color: var(--text); font-size: 16px; }
+
+.scrim { position: fixed; inset: 0; z-index: 40; background: var(--scrim); animation: fade 160ms ease-out; }
+.drawer { position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(560px, 100vw); display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px);
+  background: var(--surface); border-left: 1px solid var(--line); box-shadow: var(--shadow-pop); animation: slide 220ms cubic-bezier(.2, .8, .2, 1); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes slide { from { transform: translateX(24px); opacity: 0; } }
+.drawer-head { display: flex; align-items: center; gap: 6px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--line); }
+.drawer-head .crumb { flex: 1; min-width: 0; font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 20px; display: grid; gap: 20px; align-content: start; }
+.title-input { width: 100%; min-height: 36px; border: 0; padding: 4px 0; background: transparent; font-size: 22px; font-weight: 600;
+  letter-spacing: -.02em; line-height: 1.25; resize: none; overflow: hidden; }
+.title-input:focus { outline: none; box-shadow: inset 0 -2px 0 var(--accent-soft); }
+.stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.stepper button { display: grid; gap: 6px; padding: 8px 6px 7px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+  text-align: left; font-size: 12px; color: var(--text-2); transition-property: background-color, border-color, color; transition-duration: 120ms; }
+.stepper button::before { content: ""; height: 3px; border-radius: 2px; background: var(--line); }
+.stepper button.past { color: var(--text); }
+.stepper button.past::before, .stepper button.current::before { background: var(--accent); }
+.stepper button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--text); font-weight: 600; }
+.stepper button:hover:not(.current):not(:disabled) { border-color: var(--line-strong); }
+.stepper button:disabled { cursor: default; }
+.stage-extra { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--text-2); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.money { display: grid; grid-template-columns: 1fr 84px; gap: 6px; }
+.section-title { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+.timeline { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; }
+.timeline li { display: grid; grid-template-columns: 24px 1fr; gap: 10px; }
+.timeline li > div { min-width: 0; }
+.ev-meta { font-size: 12px; color: var(--text-3); }
+.ev-text { white-space: pre-wrap; overflow-wrap: anywhere; text-wrap: pretty; }
+.ev-comment { padding: 8px 10px; border-radius: 8px; background: var(--surface-2); margin-top: 4px; }
+.comment-box { display: grid; gap: 8px; }
+.comment-box .textarea { min-height: 60px; }
+.comment-box .row { display: flex; justify-content: flex-end; }
+.saved { font-size: 12px; color: var(--text-3); }
+
+dialog { width: min(420px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--text); box-shadow: var(--shadow-pop); }
+dialog::backdrop { background: var(--scrim); }
+dialog form { display: grid; gap: 14px; padding: 22px; }
+dialog h3 { margin: 0; font-size: 16px; text-wrap: balance; }
+dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.form-error { color: var(--danger); font-size: 13px; min-height: 1em; }
+
+#toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translate(-50%, 12px);
+  padding: 10px 14px; border-radius: 10px; background: var(--text); color: var(--bg); font-weight: 500; box-shadow: var(--shadow-pop);
+  opacity: 0; pointer-events: none; transition-property: opacity, transform; transition-duration: 180ms; transition-timing-function: ease-out;
+  max-width: calc(100vw - 32px); }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+#toast.error { background: var(--danger); color: #fff; }
+
+@media (max-width: 720px) {
+  :root { --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px)); }
+  .top { gap: 8px; padding-block: 10px; }
+  .brand span { display: none; }
+  .top .search { order: 10; flex: 1 1 55%; max-width: none; }
+  .top .select { order: 11; min-width: 0; flex: 1 1 35%; }
+  .top .hide-sm { display: none; }
+  .stats { gap: 18px; padding-block: 12px 0; }
+  .stat b { font-size: 17px; }
+  .board { grid-auto-columns: 84vw; scroll-snap-type: x mandatory; scroll-padding-inline: 16px; padding-block: 12px 24px; }
+  .list-wrap { padding-block: 12px 24px; }
+  .table .hide-sm { display: none; }
+  .drawer-body { padding: 16px; }
+  .stepper { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+const STAGES = [
+  { id: 'lead', name: 'Запрос' },
+  { id: 'quote', name: 'КП отправлено' },
+  { id: 'negotiation', name: 'Согласование' },
+  { id: 'contract', name: 'Договор' },
+  { id: 'payment', name: 'Оплата' },
+  { id: 'procurement', name: 'Закупка' },
+  { id: 'delivery', name: 'Доставка' },
+  { id: 'done', name: 'Поставлено' },
+  { id: 'lost', name: 'Отказ' },
+];
+const PIPELINE = STAGES.filter((s) => s.id !== 'lost');
+const CURRENCIES = ['KZT', 'USD', 'EUR', 'RUB', 'CNY'];
+const DEFAULT_CLIENTS = ['ERG', 'Integra Holding', 'Integra Construction'];
+const HISTORY_MAX = 150;
+
+// ---------- Утилиты ----------
+
+function h(tag, props, ...children) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'dataset') Object.assign(el.dataset, v);
+    else if (k === 'value') el.value = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k in el && typeof v !== 'string') el[k] = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of children.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    el.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  }
+  return el;
+}
+
+let toastTimer;
+function toast(text, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = text;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (el.className = ''), 2600);
+}
+
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem('postavki:' + k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('postavki:' + k, JSON.stringify(v)); } catch { /* недоступно */ } },
+};
+
+const SYMBOLS = { KZT: '₸', USD: '$', EUR: '€', RUB: '₽', CNY: '¥' };
+const nf = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const nfCompact = new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 });
+const money = (n, cur, compact) => (n == null ? '' : `${(compact ? nfCompact : nf).format(n)} ${SYMBOLS[cur] || cur}`);
+function sumByCurrency(list, compact) {
+  const sums = {};
+  for (const p of list) if (p.amount != null) sums[p.currency] = (sums[p.currency] || 0) + p.amount;
+  return Object.entries(sums).sort((a, b) => (a[0] === 'KZT' ? -1 : b[0] === 'KZT' ? 1 : 0))
+    .map(([c, n]) => money(n, c, compact)).join(' + ');
+}
+function parseAmount(v) {
+  const s = String(v ?? '').replace(/[\s ]/g, '').replace(',', '.');
+  if (!s) return null;
+  const n = Number(s);
+  if (!Number.isFinite(n) || n < 0) throw new Error('Сумма должна быть положительным числом');
+  return n;
+}
+
+const pad = (n) => String(n).padStart(2, '0');
+const localDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => localDate(new Date());
+const daysUntil = (s) => Math.round((new Date(s + 'T00:00:00') - new Date(today() + 'T00:00:00')) / 86400000);
+const dateFmt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' });
+const stampFmt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+const fmtDate = (s) => dateFmt.format(new Date(s + 'T00:00:00')).replace('.', '');
+const fmtStamp = (iso) => stampFmt.format(new Date(iso));
+
+const stageIndex = (id) => STAGES.findIndex((s) => s.id === id);
+const stageName = (id) => STAGES.find((s) => s.id === id)?.name || id;
+const isActive = (p) => p.stage !== 'done' && p.stage !== 'lost';
+const isLate = (p) => isActive(p) && p.deadline && daysUntil(p.deadline) < 0;
+const newId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+// ---------- Состояние ----------
+
+const state = {
+  db: null,
+  user: null,
+  me: null,           // id текущего человека
+  canWrite: true,     // уточняется по can('data.write') и по отказам записи
+  ready: false,
+  failed: false,
+  projects: [],
+  people: [],         // id людей, которые открывали трекер
+  names: {},          // id → профиль (имя, аватар), заново на каждой отрисовке
+  view: store.get('view', 'board'),
+  q: '',
+  client: store.get('client', ''),
+  owner: store.get('owner', ''),
+  showLost: store.get('showLost', false),
+  sort: store.get('sort', { key: 'updated_at', dir: -1 }),
+};
+
+const nameOf = (id) => (id && state.names[id]?.name) || (id === state.me ? 'Вы' : id ? 'Коллега' : '');
+
+function avatar(id, cls = '') {
+  const p = id && state.names[id];
+  if (!p) return h('span', { class: 'avatar ' + cls, 'aria-hidden': 'true' });
+  return h('img', { class: 'avatar ' + cls, src: p.avatarUrl, alt: '', title: p.name || 'Коллега' });
+}
+
+function peopleIds() {
+  const set = new Set(state.people);
+  if (state.me) set.add(state.me);
+  for (const p of state.projects) {
+    if (p.owner) set.add(p.owner);
+    for (const e of p.history || []) if (e.by) set.add(e.by);
+  }
+  return [...set];
+}
+
+async function resolveNames() {
+  if (!state.user) return;
+  const ids = peopleIds();
+  if (!ids.length) return;
+  state.names = await state.user.profiles(ids);
+}
+
+function filtered() {
+  const q = state.q.trim().toLowerCase();
+  return state.projects.filter((p) => {
+    if (state.client && p.client !== state.client) return false;
+    if (state.owner && p.owner !== state.owner) return false;
+    if (!state.showLost && p.stage === 'lost') return false;
+    if (q && !`${p.title} ${p.client} ${p.next_step} ${p.notes}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function clients() {
+  const set = new Set(DEFAULT_CLIENTS);
+  for (const p of state.projects) if (p.client) set.add(p.client);
+  return [...set].sort((a, b) => a.localeCompare(b, 'ru'));
+}
+
+// ---------- Запись в общую базу ----------
+
+// Один документ — одна запись за раз: следующая ждёт предыдущую.
+const queues = new Map();
+function enqueue(id, job) {
+  const next = (queues.get(id) || Promise.resolve()).then(job, job);
+  queues.set(id, next.catch(() => {}));
+  return next;
+}
+
+function writeFailed(e) {
+  if (e?.code === 'invalid_argument' && state.canWrite) {
+    state.canWrite = false;
+    toast('У вас доступ только на просмотр', true);
+    renderMain();
+    if (drawerId) renderDrawer();
+  } else if (e?.code === 'quota_exceeded') {
+    toast('База заполнена: удалите старые проекты', true);
+  } else {
+    toast('Не удалось сохранить. Проверьте связь и повторите', true);
+  }
+}
+
+function withHistory(p, entry) {
+  const history = [{ ...entry, by: state.me, at: new Date().toISOString() }, ...(p.history || [])].slice(0, HISTORY_MAX);
+  return history;
+}
+
+async function patchProject(id, fields, logEntry) {
+  const p = state.projects.find((x) => x.id === id);
+  if (!p) return false;
+  const now = new Date().toISOString();
+  const patch = { ...fields, updated_at: now };
+  if ('stage' in fields) patch.stage_changed_at = now;
+  if (logEntry) patch.history = withHistory(p, logEntry);
+  Object.assign(p, patch);
+  renderContent();
+  try {
+    await enqueue(id, () => state.db.collection('projects').doc(id).update(patch));
+    return true;
+  } catch (e) {
+    writeFailed(e);
+    return false;
+  }
+}
+
+async function createProject(fields) {
+  const id = newId();
+  const now = new Date().toISOString();
+  const doc = {
+    title: fields.title, client: fields.client || '', amount: fields.amount, currency: fields.currency || 'KZT',
+    stage: fields.stage || 'lead', owner: fields.owner || state.me || null, deadline: fields.deadline || null,
+    next_step: '', notes: '', created_by: state.me, created_at: now, updated_at: now, stage_changed_at: now,
+    history: [{ kind: 'created', by: state.me, at: now }],
+  };
+  await enqueue(id, () => state.db.collection('projects').doc(id).set(doc));
+  if (!state.projects.some((p) => p.id === id)) state.projects.unshift({ id, ...doc });
+  return id;
+}
+
+async function deleteProject(id) {
+  try {
+    await enqueue(id, () => state.db.collection('projects').doc(id).delete());
+    state.projects = state.projects.filter((p) => p.id !== id);
+    closeDrawer();
+    renderContent();
+    toast('Проект удалён');
+  } catch (e) { writeFailed(e); }
+}
+
+async function moveProject(id, stage) {
+  const p = state.projects.find((x) => x.id === id);
+  if (!p || p.stage === stage || !state.canWrite) return;
+  const from = p.stage;
+  if (await patchProject(id, { stage }, { kind: 'stage', from, to: stage })) toast(`«${p.title}» → ${stageName(stage)}`);
+  if (drawerId === id) renderDrawer();
+}
+
+// ---------- Шапка и сводка ----------
+
+const BRAND = () => {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 64 64');
+  s.setAttribute('aria-hidden', 'true');
+  s.innerHTML = '<rect width="64" height="64" rx="14" fill="var(--accent)"/><path d="M16 40h8V24h-8zM28 40h8V18h-8zM40 40h8V30h-8z" fill="var(--accent-text)"/><rect x="16" y="44" width="32" height="3" rx="1.5" fill="var(--accent-text)" opacity=".55"/>';
+  return h('div', { class: 'brand' }, s, h('span', {}, 'Поставки'));
+};
+
+function topBar() {
+  const viewBtn = (id, label) => h('button', {
+    type: 'button', 'aria-pressed': String(state.view === id),
+    onclick() { state.view = id; store.set('view', id); renderMain(); },
+  }, label);
+  return h('header', { class: 'top' },
+    BRAND(),
+    h('div', { class: 'seg', role: 'group', 'aria-label': 'Вид' }, viewBtn('board', 'Доска'), viewBtn('list', 'Список')),
+    h('input', { id: 'search', class: 'input search', type: 'search', placeholder: 'Поиск по проектам', value: state.q, 'aria-label': 'Поиск',
+      oninput(e) { state.q = e.target.value; renderContent(); } }),
+    h('select', { id: 'f-client', class: 'select', 'aria-label': 'Заказчик',
+      onchange(e) { state.client = e.target.value; store.set('client', state.client); renderContent(); } },
+    h('option', { value: '' }, 'Все заказчики'), clients().map((c) => h('option', { value: c, selected: c === state.client }, c))),
+    h('select', { id: 'f-owner', class: 'select hide-sm', 'aria-label': 'Ответственный',
+      onchange(e) { state.owner = e.target.value; store.set('owner', state.owner); renderContent(); } },
+    h('option', { value: '' }, 'Все ответственные'), peopleIds().map((id) => h('option', { value: id, selected: id === state.owner }, nameOf(id)))),
+    h('div', { class: 'grow' }),
+    state.canWrite
+      ? h('button', { class: 'btn btn-primary', type: 'button', onclick: () => newProjectDialog('lead') }, '+ Проект')
+      : h('span', { class: 'ro-badge' }, 'Только просмотр'));
+}
+
+function statsBar(list) {
+  const active = list.filter(isActive);
+  const late = active.filter(isLate);
+  const month = today().slice(0, 7);
+  const doneMonth = list.filter((p) => p.stage === 'done' && localDate(new Date(p.stage_changed_at)).slice(0, 7) === month);
+  const stat = (value, label, cls) => h('div', { class: 'stat ' + (cls || '') }, h('b', {}, value), h('span', {}, label));
+  return h('section', { class: 'stats', 'aria-label': 'Сводка' },
+    stat(String(active.length), 'в работе'),
+    stat(sumByCurrency(active, true) || '—', 'сумма в работе'),
+    stat(String(late.length), 'просрочено', late.length ? 'alert' : ''),
+    stat(String(doneMonth.length), 'поставлено в этом месяце'),
+    h('label', { class: 'toggle' },
+      h('input', { id: 'show-lost', type: 'checkbox', checked: state.showLost,
+        onchange(e) { state.showLost = e.target.checked; store.set('showLost', state.showLost); renderContent(); } }),
+      'Показывать отказы'));
+}
+
+// ---------- Доска ----------
+
+function deadlinePill(p) {
+  if (!p.deadline) return null;
+  if (!isActive(p)) return h('span', { class: 'pill' }, fmtDate(p.deadline));
+  const d = daysUntil(p.deadline);
+  const cls = d < 0 ? 'late' : d <= 3 ? 'soon' : '';
+  const label = d < 0 ? `просрочено ${-d} дн` : d === 0 ? 'сегодня' : d === 1 ? 'завтра' : fmtDate(p.deadline);
+  return h('span', { class: 'pill ' + cls, title: 'Срок: ' + fmtDate(p.deadline) }, label);
+}
+
+function rail(p) {
+  const idx = p.stage === 'lost' ? -1 : stageIndex(p.stage);
+  return h('div', { class: 'rail' + (p.stage === 'lost' ? ' lost' : ''), 'aria-hidden': 'true' },
+    PIPELINE.map((_, i) => h('i', { class: i <= idx ? 'on' : '' })));
+}
+
+function card(p) {
+  const comments = (p.history || []).filter((e) => e.kind === 'comment').length;
+  return h('button', {
+    class: 'card', type: 'button', draggable: state.canWrite ? 'true' : 'false', dataset: { id: p.id },
+    onclick: () => openProject(p.id),
+    ondragstart(e) { e.dataTransfer.setData('text/plain', p.id); e.dataTransfer.effectAllowed = 'move'; e.currentTarget.classList.add('dragging'); },
+    ondragend(e) { e.currentTarget.classList.remove('dragging'); },
+  },
+  p.client && h('div', { class: 'card-client' }, p.client),
+  h('div', { class: 'card-title' }, p.title),
+  p.next_step && isActive(p) && h('div', { class: 'card-next' }, p.next_step),
+  rail(p),
+  h('div', { class: 'card-foot' },
+    p.amount != null && h('span', { class: 'amount' }, money(p.amount, p.currency)),
+    h('span', { class: 'right' },
+      comments ? h('span', { class: 'faint num', style: 'white-space:nowrap', title: 'Комментарии' }, `💬 ${comments}`) : null,
+      deadlinePill(p),
+      p.owner && avatar(p.owner))));
+}
+
+function board(list) {
+  const stages = state.showLost ? STAGES : PIPELINE;
+  return h('section', { class: 'board', 'aria-label': 'Доска проектов' }, stages.map((s) => {
+    const items = list.filter((p) => p.stage === s.id)
+      .sort((a, b) => (a.deadline || '9999').localeCompare(b.deadline || '9999') || b.updated_at.localeCompare(a.updated_at));
+    const col = h('div', {
+      class: 'col', dataset: { stage: s.id },
+      ondragover(e) { if (!state.canWrite) return; e.preventDefault(); col.classList.add('drop'); },
+      ondragleave(e) { if (!col.contains(e.relatedTarget)) col.classList.remove('drop'); },
+      ondrop(e) { e.preventDefault(); col.classList.remove('drop'); moveProject(e.dataTransfer.getData('text/plain'), s.id); },
+    },
+    h('div', { class: 'col-head' }, h('h2', {}, s.name), h('span', { class: 'count' }, items.length), h('span', { class: 'sum' }, sumByCurrency(items, true))),
+    items.length ? items.map(card) : h('div', { class: 'col-empty' }, state.ready ? 'Пусто' : 'Загрузка…'),
+    state.canWrite && s.id !== 'done' && s.id !== 'lost' && h('button', { class: 'btn btn-ghost col-add', type: 'button', onclick: () => newProjectDialog(s.id) }, '+ Добавить'));
+    return col;
+  }));
+}
+
+// ---------- Список ----------
+
+function listView(list) {
+  const { key, dir } = state.sort;
+  const val = {
+    title: (p) => p.title.toLowerCase(), client: (p) => p.client.toLowerCase(),
+    stage: (p) => (p.stage === 'lost' ? 99 : stageIndex(p.stage)), amount: (p) => p.amount ?? -1,
+    owner: (p) => nameOf(p.owner), deadline: (p) => p.deadline || '9999', updated_at: (p) => p.updated_at,
+  }[key] || ((p) => p.updated_at);
+  const rows = [...list].sort((a, b) => (val(a) > val(b) ? 1 : val(a) < val(b) ? -1 : 0) * dir);
+  const th = (k, label, cls) => h('th', { class: cls, 'aria-sort': key === k ? (dir > 0 ? 'ascending' : 'descending') : null },
+    h('button', { type: 'button', onclick() { state.sort = { key: k, dir: key === k ? -dir : 1 }; store.set('sort', state.sort); renderContent(); } },
+      label, key === k ? (dir > 0 ? ' ↑' : ' ↓') : ''));
+  const total = PIPELINE.length - 1;
+  return h('section', { class: 'list-wrap' }, h('div', { class: 'table-scroll' }, h('table', { class: 'table' },
+    h('thead', {}, h('tr', {}, th('title', 'Проект'), th('client', 'Заказчик', 'hide-sm'), th('stage', 'Стадия'),
+      th('amount', 'Сумма', 'r hide-sm'), th('owner', 'Ответственный', 'hide-sm'), th('deadline', 'Срок'))),
+    h('tbody', {}, rows.map((p) => h('tr', { tabindex: '0', onclick: () => openProject(p.id), onkeydown(e) { if (e.key === 'Enter') openProject(p.id); } },
+      h('td', {}, h('div', { class: 't-title' }, p.title), p.next_step && isActive(p) && h('div', { class: 'faint', style: 'font-size:12px' }, '→ ' + p.next_step)),
+      h('td', { class: 'hide-sm muted' }, p.client),
+      h('td', {}, h('span', { class: 'stage-tag', style: `--o:${p.stage === 'lost' ? 0.25 : 0.3 + 0.7 * stageIndex(p.stage) / total}` }, stageName(p.stage))),
+      h('td', { class: 'r num hide-sm' }, money(p.amount, p.currency)),
+      h('td', { class: 'hide-sm muted' }, nameOf(p.owner)),
+      h('td', {}, deadlinePill(p) || h('span', { class: 'faint' }, '—'))))))));
+}
+
+function emptyState() {
+  const hasAny = state.projects.length > 0;
+  return h('div', { class: 'empty-state' },
+    h('h3', {}, hasAny ? 'Ничего не найдено' : 'Пока нет проектов'),
+    h('div', {}, hasAny ? 'Измените фильтры или поиск.' : 'Добавьте первую поставку: что везём, кому, на какую сумму и к какому сроку.'),
+    hasAny
+      ? h('button', { class: 'btn', type: 'button', onclick() { state.q = ''; state.client = ''; state.owner = ''; store.set('client', ''); store.set('owner', ''); renderMain(); } }, 'Сбросить фильтры')
+      : state.canWrite && h('button', { class: 'btn btn-primary', type: 'button', onclick: () => newProjectDialog('lead') }, '+ Новый проект'));
+}
+
+// ---------- Отрисовка ----------
+
+const app = document.getElementById('app');
+let contentEl;
+
+function renderMain() {
+  if (state.failed) {
+    app.replaceChildren(h('div', { class: 'empty-state', style: 'min-height:80vh;align-content:center' },
+      h('h3', {}, 'Общая база недоступна'),
+      h('div', {}, 'Откройте страницу на claude.ai, войдя в свой аккаунт. Так проекты увидят все, кому вы дали доступ.')));
+    return;
+  }
+  contentEl = h('div');
+  app.replaceChildren(topBar(), contentEl);
+  renderContent();
+}
+
+function renderContent() {
+  if (!contentEl) return;
+  const list = filtered();
+  let body;
+  if (state.view === 'board') body = [board(list), state.ready && state.projects.length === 0 && emptyState()];
+  else body = list.length ? listView(list) : (state.ready ? emptyState() : h('div', { class: 'empty-state' }, 'Загрузка…'));
+  contentEl.replaceChildren(statsBar(list), ...[body].flat().filter(Boolean));
+}
+
+// ---------- Карточка проекта ----------
+
+let drawerId = null;
+let drawerEl = null;
+
+function openProject(id) {
+  drawerId = id;
+  if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+  renderDrawer();
+}
+
+function closeDrawer() {
+  drawerId = null;
+  drawerEl?.remove();
+  drawerEl = null;
+  history.replaceState(null, '', location.pathname + location.search);
+}
+
+const FIELD_NAMES = { title: 'название', client: 'заказчика', amount: 'сумму', currency: 'валюту', owner: 'ответственного', deadline: 'срок', next_step: 'следующий шаг', notes: 'заметки' };
+
+function eventItem(e) {
+  const who = nameOf(e.by) || 'Кто-то';
+  let text;
+  if (e.kind === 'created') text = 'создал(а) проект';
+  else if (e.kind === 'stage') text = `${stageName(e.from)} → ${stageName(e.to)}`;
+  else if (e.kind === 'edit') text = 'изменил(а) ' + (FIELD_NAMES[e.field] || e.field);
+  return h('li', {}, avatar(e.by),
+    h('div', {}, h('div', { class: 'ev-meta' }, `${who} · ${fmtStamp(e.at)}`),
+      e.kind === 'comment' ? h('div', { class: 'ev-text ev-comment' }, e.text) : h('div', { class: 'ev-text muted' }, text)));
+}
+
+function autosize(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+
+function renderDrawer() {
+  const p = state.projects.find((x) => x.id === drawerId);
+  const keepScroll = drawerEl?.querySelector('.drawer-body')?.scrollTop || 0;
+  const animate = !drawerEl;
+  drawerEl?.remove();
+  if (!p) { drawerEl = null; return; }
+  const ro = !state.canWrite;
+  const note = h('span', { class: 'saved', 'aria-live': 'polite' });
+
+  async function save(field, raw) {
+    let value = raw;
+    try {
+      if (field === 'amount') value = parseAmount(raw);
+      if (field === 'title') { value = String(raw).trim(); if (!value) throw new Error('Название не может быть пустым'); }
+      if (typeof value === 'string' && field !== 'title') value = value.trim();
+      if (field === 'deadline' || field === 'owner') value = value || null;
+    } catch (e) { toast(e.message, true); return; }
+    if (p[field] === value) return;
+    if (await patchProject(p.id, { [field]: value }, { kind: 'edit', field })) {
+      note.textContent = 'Сохранено';
+      setTimeout(() => (note.textContent = ''), 1500);
+      if (drawerId === p.id) refreshTimeline();
+    }
+  }
+  const onChange = (field) => ({ disabled: ro, onchange: (e) => save(field, e.target.value) });
+
+  const idx = stageIndex(p.stage);
+  const stepper = h('div', { class: 'stepper', role: 'group', 'aria-label': 'Стадия' }, PIPELINE.map((s, i) =>
+    h('button', { type: 'button', disabled: ro, 'aria-pressed': String(p.stage === s.id),
+      class: p.stage === s.id ? 'current' : (p.stage !== 'lost' && i < idx ? 'past' : ''),
+      onclick: () => moveProject(p.id, s.id) }, s.name)));
+
+  const comment = h('textarea', { id: 'comment', class: 'textarea', placeholder: 'Комментарий, договорённость, номер счёта…', 'aria-label': 'Комментарий',
+    onkeydown(e) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) sendComment(); } });
+  async function sendComment() {
+    const text = comment.value.trim().slice(0, 3000);
+    if (!text) return;
+    if (await patchProject(p.id, {}, { kind: 'comment', text })) { comment.value = ''; refreshTimeline(); }
+  }
+
+  const timeline = h('ol', { class: 'timeline' });
+  function refreshTimeline() {
+    const cur = state.projects.find((x) => x.id === p.id);
+    timeline.replaceChildren(...(cur?.history || []).map(eventItem));
+  }
+  refreshTimeline();
+
+  const canDelete = !ro;
+  let armed = false;
+  const delBtn = canDelete && h('button', { class: 'btn btn-ghost btn-danger', type: 'button',
+    onclick(e) {
+      if (!armed) { armed = true; e.currentTarget.textContent = 'Точно удалить?'; e.currentTarget.classList.add('armed'); return; }
+      deleteProject(p.id);
+    } }, 'Удалить');
+
+  const ownerIds = peopleIds();
+  const drawer = h('aside', { class: 'drawer', role: 'dialog', 'aria-modal': 'true', 'aria-label': p.title, style: animate ? null : 'animation:none' },
+    h('div', { class: 'drawer-head' },
+      h('div', { class: 'crumb' }, [p.client, `обновлён ${fmtStamp(p.updated_at)}`].filter(Boolean).join(' · ')),
+      note,
+      h('button', { class: 'btn btn-ghost', type: 'button', title: 'Скопировать ссылку на проект',
+        onclick() {
+          const url = location.href;
+          navigator.clipboard?.writeText(url).then(() => toast('Ссылка скопирована'), () => toast('Скопируйте адрес из строки браузера'));
+        } }, 'Ссылка'),
+      delBtn,
+      h('button', { class: 'btn btn-ghost btn-icon', type: 'button', 'aria-label': 'Закрыть', onclick: closeDrawer }, '✕')),
+    h('div', { class: 'drawer-body' },
+      h('textarea', { id: 'd-title', class: 'title-input', rows: 1, value: p.title, 'aria-label': 'Название', ...onChange('title'),
+        oninput: (e) => autosize(e.target), onkeydown(e) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } } }),
+      h('div', {}, stepper,
+        h('div', { class: 'stage-extra' },
+          h('span', {}, p.stage === 'lost' ? 'Проект в отказе' : `В стадии с ${fmtStamp(p.stage_changed_at)}`),
+          !ro && (p.stage === 'lost'
+            ? h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => moveProject(p.id, 'lead') }, 'Вернуть в работу')
+            : h('button', { class: 'btn btn-ghost btn-danger', type: 'button', onclick: () => moveProject(p.id, 'lost') }, 'Отказ')))),
+      h('label', { class: 'field' }, h('span', {}, 'Следующий шаг'),
+        h('input', { id: 'd-next', class: 'input', value: p.next_step, placeholder: 'Например: отправить КП до пятницы', ...onChange('next_step') })),
+      h('div', { class: 'grid-2' },
+        h('label', { class: 'field' }, h('span', {}, 'Заказчик'),
+          h('input', { id: 'd-client', class: 'input', value: p.client, list: 'clients-list', ...onChange('client') })),
+        h('label', { class: 'field' }, h('span', {}, 'Сумма'),
+          h('div', { class: 'money' },
+            h('input', { id: 'd-amount', class: 'input num', inputmode: 'decimal', value: p.amount ?? '', placeholder: '0', ...onChange('amount') }),
+            h('select', { id: 'd-currency', class: 'select', 'aria-label': 'Валюта', ...onChange('currency') },
+              CURRENCIES.map((c) => h('option', { value: c, selected: c === p.currency }, c))))),
+        h('label', { class: 'field' }, h('span', {}, 'Ответственный'),
+          h('select', { id: 'd-owner', class: 'select', ...onChange('owner') },
+            h('option', { value: '' }, '—'),
+            ownerIds.map((id) => h('option', { value: id, selected: id === p.owner }, nameOf(id))))),
+        h('label', { class: 'field' }, h('span', {}, 'Срок'),
+          h('input', { id: 'd-deadline', class: 'input', type: 'date', value: p.deadline || '', ...onChange('deadline') }))),
+      h('label', { class: 'field' }, h('span', {}, 'Заметки'),
+        h('textarea', { id: 'd-notes', class: 'textarea', value: p.notes, placeholder: 'Позиции, объёмы, контакты, условия оплаты…', ...onChange('notes') })),
+      h('section', {},
+        h('h4', { class: 'section-title' }, 'История и комментарии'),
+        !ro && h('div', { class: 'comment-box' }, comment,
+          h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: sendComment }, 'Отправить'))),
+        timeline)));
+
+  drawerEl = h('div', {}, h('div', { class: 'scrim', style: animate ? null : 'animation:none', onclick: closeDrawer }), drawer, clientsDatalist());
+  document.body.append(drawerEl);
+  autosize(drawerEl.querySelector('.title-input'));
+  drawerEl.querySelector('.drawer-body').scrollTop = keepScroll;
+}
+
+function clientsDatalist() {
+  return h('datalist', { id: 'clients-list' }, clients().map((c) => h('option', { value: c })));
+}
+
+// ---------- Новый проект ----------
+
+function newProjectDialog(stage) {
+  if (!state.canWrite || !state.ready) return;
+  const err = h('div', { class: 'form-error' });
+  const form = h('form', {
+    async onsubmit(e) {
+      e.preventDefault();
+      err.textContent = '';
+      const fd = Object.fromEntries(new FormData(form));
+      try {
+        const title = String(fd.title || '').trim().slice(0, 200);
+        if (!title) throw new Error('Укажите, что поставляем');
+        const id = await createProject({
+          title, client: String(fd.client || '').trim().slice(0, 120), amount: parseAmount(fd.amount),
+          currency: fd.currency, stage, owner: fd.owner || null, deadline: fd.deadline || null,
+        });
+        dlg.close();
+        renderMain();
+        openProject(id);
+      } catch (ex) {
+        if (ex?.code) { dlg.close(); writeFailed(ex); } else err.textContent = ex.message;
+      }
+    },
+  },
+  h('h3', {}, `Новый проект · ${stageName(stage)}`),
+  h('label', { class: 'field' }, h('span', {}, 'Что поставляем'), h('input', { id: 'n-title', class: 'input', name: 'title', required: true, autofocus: true, placeholder: 'Кабель ВВГнг 3×2,5, 5 км' })),
+  h('label', { class: 'field' }, h('span', {}, 'Заказчик'), h('input', { id: 'n-client', class: 'input', name: 'client', list: 'clients-list', value: state.client, placeholder: 'ERG, Integra Construction…' })),
+  h('div', { class: 'field' }, h('span', {}, 'Сумма'),
+    h('div', { class: 'money' },
+      h('input', { id: 'n-amount', class: 'input num', name: 'amount', inputmode: 'decimal', placeholder: '0', 'aria-label': 'Сумма' }),
+      h('select', { id: 'n-currency', class: 'select', name: 'currency', 'aria-label': 'Валюта' }, CURRENCIES.map((c) => h('option', { value: c }, c))))),
+  h('div', { class: 'grid-2' },
+    h('label', { class: 'field' }, h('span', {}, 'Ответственный'),
+      h('select', { id: 'n-owner', class: 'select', name: 'owner' }, peopleIds().map((id) => h('option', { value: id, selected: id === state.me }, nameOf(id))))),
+    h('label', { class: 'field' }, h('span', {}, 'Срок'), h('input', { id: 'n-deadline', class: 'input', type: 'date', name: 'deadline' }))),
+  err,
+  h('div', { class: 'actions' },
+    h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => dlg.close() }, 'Отмена'),
+    h('button', { class: 'btn btn-primary', type: 'submit' }, 'Создать')));
+  const dlg = h('dialog', { onclose: () => dlg.remove() }, form, clientsDatalist());
+  document.body.append(dlg);
+  dlg.showModal();
+}
+
+// ---------- Запуск ----------
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && drawerId && !document.querySelector('dialog[open]')) closeDrawer();
+  const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+  if (typing || document.querySelector('dialog[open]')) return;
+  if ((e.key === 'n' || e.key === 'т') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); newProjectDialog('lead'); }
+  if (e.key === '/') { e.preventDefault(); document.getElementById('search')?.focus(); }
+});
+
+function openFromHash() {
+  const id = location.hash.slice(1);
+  if (id && state.projects.some((p) => p.id === id)) openProject(id);
+}
+window.addEventListener('hashchange', openFromHash);
+
+renderMain();
+
+(async function boot() {
+  const [db, user] = await Promise.all([window.claude?.use('db') ?? null, window.claude?.use('user') ?? null]);
+  if (!db) { state.failed = true; renderMain(); return; }
+  state.db = db;
+  state.user = user;
+  state.me = user ? await user.id() : null;
+  const can = user ? await user.can('data.write') : null;
+  if (can === false) state.canWrite = false;
+
+  let firstLoad = true;
+  db.collection('projects').onSnapshot(async (snap) => {
+    state.projects = snap.docs.map((d) => ({ id: d.id, ...structuredClone(d.data()) }));
+    state.ready = true;
+    await resolveNames();
+    const focusInDrawer = drawerEl && drawerEl.contains(document.activeElement);
+    const focusedId = document.activeElement?.id;
+    if (contentEl) renderContent(); else renderMain();
+    if (firstLoad) { firstLoad = false; renderMain(); openFromHash(); }
+    else if (drawerId) {
+      if (!state.projects.some((p) => p.id === drawerId)) closeDrawer();
+      else if (!focusInDrawer) renderDrawer();
+    }
+    if (focusedId && !focusInDrawer) document.getElementById(focusedId)?.focus();
+  }, () => { state.failed = true; renderMain(); });
+
+  db.collection('people').onSnapshot(async (snap) => {
+    state.people = snap.docs.map((d) => d.id);
+    await resolveNames();
+    if (state.ready) renderMain();
+  }, () => {});
+
+  // Отмечаем себя в списке людей, чтобы коллеги могли назначить вас ответственным.
+  if (state.me && state.canWrite) {
+    try {
+      const mine = await db.collection('people').doc(state.me).get();
+      if (!mine.exists) await db.collection('people').doc(state.me).set({ joined_at: new Date().toISOString() });
+    } catch (e) { if (e?.code === 'invalid_argument') { state.canWrite = false; renderMain(); } }
+  }
+})();
+</script>
