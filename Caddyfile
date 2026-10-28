@@ -1,0 +1,5 @@
+# Замените на свой домен, A-запись которого указывает на IP сервера.
+tracker.example.com {
+	encode gzip
+	reverse_proxy app:3000
+}

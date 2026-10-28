@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      # Включите, когда сайт открывается по https (через Caddy ниже)
+      COOKIE_SECURE: "1"
+    volumes:
+      - ./data:/app/data
+    expose:
+      - "3000"
+
+  # Caddy сам получает HTTPS-сертификат. Замените домен в Caddyfile.
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:

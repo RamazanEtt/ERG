@@ -1,0 +1,12 @@
+{
+  "name": "erg-tracker",
+  "version": "1.0.0",
+  "description": "Минималистичный трекер проектов поставок (ERG, Integra Holding, Integra Construction и др.)",
+  "private": true,
+  "type": "commonjs",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node --no-warnings server.js",
+    "test": "node --no-warnings --test test/*.test.js"
+  }
+}

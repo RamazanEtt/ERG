@@ -1,0 +1,9 @@
+{
+  "name": "Поставки",
+  "short_name": "Поставки",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f5f2",
+  "theme_color": "#1f4d3a",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
