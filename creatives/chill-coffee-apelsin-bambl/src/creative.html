@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Chill Coffee Апельсин Бамбл</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --or:#ff7a00; --or2:#ffb21a; --red:#e3141b; --gold:#f6c64a; --pur:#7b3cff;
+}
+html,body{background:#000}
+.ad{position:relative;width:1080px;overflow:hidden;color:#fff;font-family:'Montserrat',sans-serif;
+  background:
+    radial-gradient(ellipse 55% 40% at 72% 52%, rgba(255,120,0,.55), rgba(255,80,0,.12) 55%, transparent 75%),
+    radial-gradient(ellipse 60% 35% at 10% 0%, rgba(123,60,255,.28), transparent 70%),
+    radial-gradient(ellipse 80% 30% at 50% 108%, rgba(255,90,0,.35), transparent 70%),
+    linear-gradient(180deg,#0d0806 0%,#140a05 45%,#0a0503 100%);}
+.feed{height:1350px}
+.story{height:1920px}
+.layer{position:absolute;inset:0;pointer-events:none}
+canvas.sparks{position:absolute;inset:0}
+
+/* brush strokes like the can art */
+.strokes path{fill:none;stroke-linecap:round}
+
+/* ---------- top ---------- */
+.logo{font-family:'Kaushan Script',cursive;font-size:84px;line-height:1;letter-spacing:-1px;
+  color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.5),0 0 30px rgba(255,140,0,.35);transform:rotate(-4deg);white-space:nowrap}
+.logo sup{font-family:'Montserrat';font-size:18px;vertical-align:top;margin-left:4px}
+.opt{font-family:'Oswald';font-weight:700;font-size:34px;letter-spacing:1px;text-transform:uppercase;
+  background:linear-gradient(180deg,#ff2a2a,#b80b10);padding:8px 26px 10px;transform:skewX(-8deg);
+  box-shadow:0 8px 24px rgba(227,20,27,.45), inset 0 2px 0 rgba(255,255,255,.25);border-radius:6px;white-space:nowrap}
+.opt span{display:inline-block;transform:skewX(8deg)}
+
+/* ---------- headline ---------- */
+.new{display:inline-flex;align-items:center;gap:12px;font-family:'Russo One';font-size:30px;letter-spacing:3px;
+  color:#1a0b00;background:linear-gradient(90deg,#ffd23a,#ff9a00);padding:10px 22px 10px 16px;border-radius:40px;
+  box-shadow:0 0 0 3px rgba(255,210,58,.25),0 0 40px rgba(255,170,0,.6)}
+.new i{width:16px;height:16px;border-radius:50%;background:#e3141b;box-shadow:0 0 12px #ff2a00;font-style:normal}
+.h-small{font-family:'Oswald';font-weight:700;text-transform:uppercase;line-height:.95;color:#fff;
+  text-shadow:0 6px 0 rgba(0,0,0,.35)}
+.h-big{display:inline-block;white-space:nowrap;padding-right:8px;font-family:'Oswald';font-weight:700;text-transform:uppercase;line-height:.88;letter-spacing:-1px;
+  background:linear-gradient(180deg,#ffe35a 0%,#ffae00 38%,#ff6a00 70%,#e83a00 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 0 #5a1600) drop-shadow(0 0 28px rgba(255,120,0,.55))}
+.h-out{font-family:'Oswald';font-weight:700;text-transform:uppercase;line-height:.9;letter-spacing:6px;
+  color:transparent;-webkit-text-stroke:3px #fff;text-shadow:0 0 30px rgba(255,255,255,.15)}
+.instock{display:inline-flex;align-items:center;gap:14px;font-family:'Montserrat';font-weight:900;font-size:30px;
+  text-transform:uppercase;letter-spacing:1px;padding:14px 28px 14px 18px;border-radius:16px;
+  background:linear-gradient(180deg,#26d466,#0f9a42);box-shadow:0 10px 30px rgba(20,200,90,.35),inset 0 2px 0 rgba(255,255,255,.3)}
+.instock .ck{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:'Montserrat';font-weight:800;font-size:22px;text-transform:uppercase;padding:9px 16px;border-radius:10px;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);backdrop-filter:blur(4px);white-space:nowrap}
+.chip.hard{background:linear-gradient(180deg,#ff2a2a,#b80b10);border-color:transparent}
+.chip b{color:var(--or2)}
+
+/* ---------- can ---------- */
+.canwrap{position:absolute}
+.canwrap .glow{position:absolute;left:50%;top:52%;width:150%;height:85%;transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at center,rgba(255,150,30,.75),rgba(255,90,0,.25) 45%,transparent 70%);filter:blur(10px)}
+.canwrap img.can{position:relative;width:100%;display:block;
+  filter:drop-shadow(0 40px 40px rgba(0,0,0,.7)) drop-shadow(0 0 2px rgba(255,200,120,.8)) contrast(1.08) saturate(1.1) brightness(1.04)}
+.canwrap .rim{position:absolute;inset:0;border-radius:40px;mix-blend-mode:screen;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,140,0,.0) 0%,rgba(255,150,40,.28) 3%,transparent 12%,transparent 85%,rgba(255,170,60,.35) 97%,transparent 100%)}
+.canwrap .shadow{position:absolute;left:8%;right:8%;bottom:-26px;height:50px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.85),transparent 70%)}
+.podium{position:absolute;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 30%,#3a2416,#120a06 60%,#050302);
+  box-shadow:0 -2px 0 rgba(255,150,40,.7),0 0 60px rgba(255,110,0,.45),inset 0 10px 30px rgba(255,140,40,.25)}
+
+/* ---------- badge ---------- */
+.ufc{position:absolute;border-radius:50%;display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle at 35% 30%,#fff3b8,#f3c445 35%,#b77c12 75%,#7a4c05);
+  box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 0 6px rgba(0,0,0,.35),inset 0 0 0 4px rgba(255,240,180,.6)}
+.ufc div{font-family:'Oswald';font-weight:700;text-transform:uppercase;color:#2a1600;line-height:1.02}
+.ufc .u{display:inline-block;background:#e3141b;color:#fff;font-style:italic;padding:0 6px;border-radius:3px;margin:2px 0}
+
+/* ---------- NDS band ---------- */
+.nds{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:26px;
+  background:linear-gradient(90deg,#0b0b0b,#1b1b1b 20%,#1b1b1b 80%,#0b0b0b);
+  border-top:2px solid rgba(246,198,74,.8);border-bottom:2px solid rgba(246,198,74,.8);
+  box-shadow:0 0 50px rgba(246,198,74,.18)}
+.nds .shield{flex:none}
+.nds .t1{font-family:'Oswald';font-weight:700;text-transform:uppercase;line-height:1;letter-spacing:.5px}
+.nds .t1 b{background:linear-gradient(180deg,#fff2b0,#f6c64a 50%,#c88a10);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nds .t2{font-family:'Montserrat';font-weight:600;color:#cfc6b4;letter-spacing:.5px;margin-top:6px}
+
+/* ---------- bottom ---------- */
+.deal{font-family:'Oswald';font-weight:700;text-transform:uppercase;line-height:1}
+.deal .pct{font-family:'Russo One';color:#fff;background:linear-gradient(180deg,#ff2a2a,#a80a0f);
+  padding:4px 16px 8px;border-radius:12px;display:inline-block;transform:rotate(-3deg);
+  box-shadow:0 0 0 3px rgba(255,255,255,.12),0 0 40px rgba(255,30,30,.5)}
+.deal small{display:block;font-family:'Montserrat';font-weight:800;color:#ffd9a8;letter-spacing:.5px}
+.cta{display:flex;align-items:center;justify-content:center;gap:16px;font-family:'Oswald';font-weight:700;
+  text-transform:uppercase;color:#2a1200;border-radius:999px;white-space:nowrap;
+  background:linear-gradient(180deg,#fff0a0 0%,#ffc21a 40%,#ff8a00 100%);
+  box-shadow:0 0 0 4px rgba(255,200,60,.25),0 14px 40px rgba(255,140,0,.55),inset 0 3px 0 rgba(255,255,255,.7),inset 0 -5px 0 rgba(160,60,0,.35)}
+.cta .arr{width:52px;height:52px;border-radius:50%;background:#2a1200;display:grid;place-items:center}
+.contacts{position:absolute;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:34px;
+  font-family:'Montserrat';font-weight:800;color:#fff}
+.contacts span{display:flex;align-items:center;gap:12px}
+.contacts .dot{width:8px;height:8px;border-radius:50%;background:var(--or)}
+</style>
+</head>
+<body>
+<div id="ad" class="ad"></div>
+
+<template id="svgs">
+  <!-- orange slice -->
+  <symbol id="slice" viewBox="-100 -100 200 200">
+    <defs>
+      <radialGradient id="peel" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ffb540"/><stop offset=".6" stop-color="#ff7a00"/><stop offset="1" stop-color="#c94a00"/></radialGradient>
+      <radialGradient id="pulp" cx="50%" cy="50%" r="55%"><stop offset="0" stop-color="#fff2b0"/><stop offset=".4" stop-color="#ffb52a"/><stop offset="1" stop-color="#ff8400"/></radialGradient>
+    </defs>
+    <circle r="98" fill="url(#peel)"/>
+    <circle r="88" fill="#fff4d6"/>
+    <g fill="url(#pulp)">
+      <path id="seg" d="M0 -8 L-27 -80 A84 84 0 0 1 27 -80 Z"/>
+      <use href="#seg" transform="rotate(36)"/><use href="#seg" transform="rotate(72)"/><use href="#seg" transform="rotate(108)"/>
+      <use href="#seg" transform="rotate(144)"/><use href="#seg" transform="rotate(180)"/><use href="#seg" transform="rotate(216)"/>
+      <use href="#seg" transform="rotate(252)"/><use href="#seg" transform="rotate(288)"/><use href="#seg" transform="rotate(324)"/>
+    </g>
+    <circle r="9" fill="#fff4d6"/>
+    <ellipse cx="-38" cy="-40" rx="26" ry="12" fill="#fff" opacity=".35" transform="rotate(-40 -38 -40)"/>
+  </symbol>
+  <!-- coffee bean -->
+  <symbol id="bean" viewBox="-60 -80 120 160">
+    <defs><radialGradient id="bg" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#a8642e"/><stop offset=".5" stop-color="#5a2c10"/><stop offset="1" stop-color="#1e0c04"/></radialGradient></defs>
+    <ellipse rx="52" ry="74" fill="url(#bg)"/>
+    <path d="M4 -70 C-26 -30 30 20 -4 70" stroke="#1a0802" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <ellipse cx="-22" cy="-34" rx="10" ry="22" fill="#fff" opacity=".18" transform="rotate(20 -22 -34)"/>
+  </symbol>
+</template>
+
+<script>
+const fmt = (location.hash.slice(1) || 'feed');
+const ad = document.getElementById('ad');
+ad.classList.add(fmt);
+const W = 1080, H = fmt === 'story' ? 1920 : 1350;
+const defs = document.getElementById('svgs').innerHTML;
+
+const icoWA = `<svg width="38" height="38" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#25D366"/><path fill="#fff" d="M16 6.5a9.4 9.4 0 0 0-8.1 14.2L6.6 25.5l4.9-1.3A9.4 9.4 0 1 0 16 6.5zm0 17.2c-1.4 0-2.8-.4-4-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A7.8 7.8 0 1 1 16 23.7zm4.3-5.8c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.4 6.4 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg>`;
+const icoIG = `<svg width="38" height="38" viewBox="0 0 32 32"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".6" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#ig)"/><rect x="7" y="7" width="18" height="18" rx="5.5" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="16" cy="16" r="4.3" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="21.6" cy="10.4" r="1.4" fill="#fff"/></svg>`;
+const shield = s => `<svg class="shield" width="${s}" height="${s*1.15}" viewBox="0 0 100 115">
+  <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#f6c64a"/><stop offset="1" stop-color="#b47a0c"/></linearGradient></defs>
+  <path d="M50 3 L94 18 V54 C94 82 74 101 50 112 C26 101 6 82 6 54 V18 Z" fill="url(#sg)"/>
+  <path d="M50 13 L85 25 V54 C85 76 70 91 50 101 C30 91 15 76 15 54 V25 Z" fill="#1a1206"/>
+  <text x="50" y="66" text-anchor="middle" font-family="Russo One" font-size="26" fill="#f6c64a">НДС</text>
+  <path d="M33 78 l10 9 l22-20" fill="none" stroke="#26d466" stroke-width="0" /></svg>`;
+const check = `<svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#0f9a42" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const arrow = `<svg width="22" height="22" viewBox="0 0 24 24"><path d="M8 4l8 8-8 8" fill="none" stroke="#ffc21a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+let uid=0;
+const sliceSVG = () => { const k=++uid; let segs=''; for(let i=0;i<10;i++) segs+=`<path d="M0 -9 L-26 -79 A83 83 0 0 1 26 -79 Z" transform="rotate(${i*36})"/>`;
+  return `<svg viewBox="-100 -100 200 200" width="100%" height="100%"><defs>
+  <radialGradient id="pe${k}" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ffc060"/><stop offset=".55" stop-color="#ff7a00"/><stop offset="1" stop-color="#b83f00"/></radialGradient>
+  <radialGradient id="pu${k}" cx="50%" cy="50%" r="55%"><stop offset="0" stop-color="#fff0a0"/><stop offset=".45" stop-color="#ffb020"/><stop offset="1" stop-color="#ff7800"/></radialGradient></defs>
+  <circle r="98" fill="url(#pe${k})"/><circle r="88" fill="#fff1d0"/><g fill="url(#pu${k})">${segs}</g><circle r="10" fill="#fff1d0"/>
+  <g fill="#fff" opacity=".55"><ellipse cx="-30" cy="-50" rx="5" ry="14" transform="rotate(-30 -30 -50)"/><ellipse cx="45" cy="20" rx="4" ry="12" transform="rotate(60 45 20)"/><ellipse cx="-20" cy="52" rx="4" ry="10" transform="rotate(-160 -20 52)"/></g>
+  <ellipse cx="-40" cy="-42" rx="30" ry="12" fill="#fff" opacity=".28" transform="rotate(-42 -40 -42)"/></svg>`; };
+const beanSVG = () => { const k=++uid; return `<svg viewBox="-60 -80 120 160" width="100%" height="100%"><defs><radialGradient id="bg${k}" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#b06a30"/><stop offset=".5" stop-color="#5a2c10"/><stop offset="1" stop-color="#1e0c04"/></radialGradient></defs>
+  <ellipse rx="52" ry="74" fill="url(#bg${k})"/><path d="M4 -70 C-26 -30 30 20 -4 70" stroke="#1a0802" stroke-width="9" fill="none" stroke-linecap="round"/><ellipse cx="-22" cy="-34" rx="10" ry="22" fill="#fff" opacity=".18" transform="rotate(20 -22 -34)"/></svg>`; };
+const slice = (x,y,s,r,o=1,blur=0) => `<div style="position:absolute;left:${x}px;top:${y}px;width:${s}px;height:${s}px;transform:rotate(${r}deg);opacity:${o};filter:${blur?`blur(${blur}px)`:''} drop-shadow(0 18px 24px rgba(0,0,0,.55))">${sliceSVG()}</div>`;
+const bean  = (x,y,s,r,blur=0) => `<div style="position:absolute;left:${x}px;top:${y}px;width:${s}px;height:${s*1.33}px;transform:rotate(${r}deg);filter:${blur?`blur(${blur}px)`:''} drop-shadow(0 10px 14px rgba(0,0,0,.6))">${beanSVG()}</div>`;
+
+const strokes = (pts) => `<svg class="layer strokes" viewBox="0 0 ${W} ${H}" style="opacity:.9">
+  <defs><linearGradient id="st1" x1="0" x2="1"><stop offset="0" stop-color="#ff3d00" stop-opacity="0"/><stop offset=".3" stop-color="#ff6a00"/><stop offset="1" stop-color="#ffb300"/></linearGradient>
+  <linearGradient id="st2" x1="0" x2="1"><stop offset="0" stop-color="#7b3cff" stop-opacity="0"/><stop offset=".5" stop-color="#8a3cff"/><stop offset="1" stop-color="#c04bff" stop-opacity=".2"/></linearGradient></defs>
+  ${pts}</svg>`;
+
+let html = `<svg width="0" height="0" style="position:absolute">${defs}</svg><canvas class="sparks" width="${W}" height="${H}"></canvas>`;
+
+if (fmt === 'feed') {
+  html += strokes(`
+    <path d="M520 420 C700 330 900 360 1120 250" stroke="url(#st1)" stroke-width="34"/>
+    <path d="M540 470 C720 400 880 420 1110 330" stroke="url(#st2)" stroke-width="12"/>
+    <path d="M470 1000 C650 930 880 980 1110 860" stroke="url(#st1)" stroke-width="26"/>
+    <path d="M520 1040 C700 990 900 1010 1110 930" stroke="url(#st2)" stroke-width="10"/>
+    <path d="M-20 300 C120 280 220 250 380 200" stroke="url(#st2)" stroke-width="8" opacity=".6"/>`)
+  + slice(870,300,190,18,1) + slice(560,880,150,-25,1) + slice(940,860,130,40,.95) + slice(965,560,110,-15,1)
+  + slice(500,250,70,10,.7,3) + bean(1000,720,50,30,1) + bean(520,600,46,-40,2) + bean(80,1010,50,20,3) + bean(450,145,40,60,2)
+  + `<div class="podium" style="left:600px;top:1010px;width:400px;height:90px"></div>
+     <div class="canwrap" style="left:640px;top:265px;width:330px;transform:rotate(6deg)">
+       <div class="glow"></div><img class="can" src="can.png"><div class="shadow"></div></div>`
+    + `<div class="ufc" style="left:900px;top:160px;width:150px;height:150px;transform:rotate(10deg)"><div style="font-size:17px">Выбор<br>амбассадора<br><span class="u">UFC</span><br>Арман<br>Царукян</div></div>`
+
+  + `<div style="position:absolute;left:56px;top:52px;display:flex;align-items:center;gap:26px">
+       <div class="logo">Chill Coffee<sup>®</sup></div>
+       <div class="opt"><span>Оптом в Казахстане</span></div></div>`
+
+  + `<div style="position:absolute;left:60px;top:205px;width:560px">
+      <div class="new"><i></i>НОВИНКА</div>
+      <div class="h-small" style="font-size:92px;margin-top:22px">Новый вкус</div>
+      <div class="h-big" style="font-size:128px;margin-top:8px">Апельсин</div>
+      <div class="h-out" style="font-size:128px;margin-top:4px">Бамбл</div>
+      <div class="instock" style="margin-top:30px"><span class="ck">${check}</span>Уже в наличии</div>
+      <div class="chips" style="margin-top:26px;width:520px">
+        <span class="chip hard">HARD</span><span class="chip"><b>2×</b> эспрессо</span>
+        <span class="chip">без сахара</span><span class="chip">0,33 л</span><span class="chip"><b>132 мг</b> кофеина</span>
+      </div></div>`
+
+  + `<div class="nds" style="top:1060px;height:118px">${shield(64)}
+       <div><div class="t1" style="font-size:44px">Работаем <b>с НДС</b> · Официально</div>
+       <div class="t2" style="font-size:21px">Договор · ЭСФ · полный пакет закрывающих документов</div></div></div>`
+
+  + `<div style="position:absolute;left:56px;top:1196px;right:56px;display:flex;align-items:center;justify-content:space-between">
+       <div class="deal" style="font-size:38px"><span class="pct" style="font-size:44px">−10%</span>
+         <small style="font-size:20px;margin-top:10px">на первый заказ от 100 шт</small></div>
+       <div class="cta" style="font-size:36px;height:84px;padding:0 14px 0 40px">Получить прайс-лист<span class="arr">${arrow}</span></div></div>`
+  + `<div class="contacts" style="top:1302px;font-size:24px"><span>${icoWA}+7 776 045 47 75</span><i class="dot"></i><span>${icoIG}@chillcoffee_almaty</span></div>`;
+} else {
+  html += strokes(`
+    <path d="M-40 820 C250 700 700 780 1120 620" stroke="url(#st1)" stroke-width="40"/>
+    <path d="M-40 880 C260 780 700 840 1120 700" stroke="url(#st2)" stroke-width="14"/>
+    <path d="M-40 1330 C300 1240 760 1310 1120 1180" stroke="url(#st1)" stroke-width="30"/>
+    <path d="M-40 1380 C300 1300 760 1360 1120 1250" stroke="url(#st2)" stroke-width="12"/>`)
+  + slice(790,1010,200,25,1) + slice(860,1240,150,-10,1) + slice(-50,740,170,-20,.95) + slice(150,1370,100,35,1)
+  + slice(300,690,70,10,.7,4) + bean(330,1330,44,-30,1) + bean(700,640,40,60,3)
+  + `<div class="podium" style="left:330px;top:1395px;width:440px;height:96px"></div>
+     <div class="canwrap" style="left:395px;top:720px;width:310px;transform:rotate(5deg)">
+       <div class="glow"></div><img class="can" src="can.png"><div class="shadow"></div></div>`
+  + `<div class="ufc" style="left:800px;top:770px;width:200px;height:200px;transform:rotate(10deg)"><div style="font-size:23px">Выбор<br>амбассадора<br><span class="u">UFC</span><br>Арман<br>Царукян</div></div>`
+  + `<div style="position:absolute;left:0;right:0;top:120px;display:flex;flex-direction:column;align-items:center;gap:18px">
+       <div class="logo" style="font-size:96px">Chill Coffee<sup>®</sup></div>
+       <div class="opt" style="font-size:36px"><span>Оптом в Казахстане</span></div></div>`
+  + `<div style="position:absolute;left:0;right:0;top:340px;text-align:center">
+       <div class="new" style="font-size:28px"><i></i>НОВИНКА</div>
+       <div class="h-small" style="font-size:76px;margin-top:14px">Новый вкус</div>
+       <div class="h-big" style="font-size:128px;margin-top:2px;line-height:.9">Апельсин<br>Бамбл</div></div>`
+  + `<div style="position:absolute;left:50px;top:960px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;z-index:2">
+       <div class="instock" style="font-size:26px;padding:12px 22px 12px 14px;transform:rotate(-4deg);margin-bottom:10px"><span class="ck" style="width:34px;height:34px">${check}</span>Уже в наличии</div>
+       <span class="chip hard">HARD</span><span class="chip"><b>2×</b> эспрессо</span>
+       <span class="chip">без сахара</span><span class="chip">0,33 л</span><span class="chip"><b>132 мг</b> кофеина</span></div>`
+  + `<div class="nds" style="top:1475px;height:120px">${shield(66)}
+       <div><div class="t1" style="font-size:46px">Работаем <b>с НДС</b> · Официально</div>
+       <div class="t2" style="font-size:21px">Договор · ЭСФ · полный пакет документов</div></div></div>`
+  + `<div style="position:absolute;left:0;right:0;top:1625px;display:flex;align-items:center;justify-content:center;gap:28px">
+       <div class="deal" style="text-align:center"><span class="pct" style="font-size:42px">−10%</span>
+         <small style="font-size:18px;margin-top:8px">на 1-й заказ от 100 шт</small></div>
+       <div class="cta" style="font-size:36px;height:88px;padding:0 14px 0 38px">Получить прайс-лист<span class="arr">${arrow}</span></div></div>`
+  + `<div class="contacts" style="top:1752px;font-size:26px"><span>${icoWA}+7 776 045 47 75</span><i class="dot"></i><span>${icoIG}@chillcoffee_almaty</span></div>`;
+}
+ad.innerHTML = html;
+
+// two-line big headline in story: keep "Бамбл" on second line
+
+// sparks / embers
+const c = ad.querySelector('canvas.sparks'), g = c.getContext('2d');
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < 420; i++) {
+  const x = rnd() * W, y = rnd() * H, r = rnd() < .9 ? rnd() * 2.2 + .4 : rnd() * 5 + 2;
+  const a = rnd() * .8 + .2, hue = 20 + rnd() * 25;
+  const gr = g.createRadialGradient(x, y, 0, x, y, r * 3);
+  gr.addColorStop(0, `hsla(${hue+15},100%,80%,${a})`); gr.addColorStop(.35, `hsla(${hue},100%,55%,${a*.6})`); gr.addColorStop(1, 'hsla(20,100%,50%,0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 3, 0, 7); g.fill();
+  if (rnd() < .18) { // streaks
+    const l = 10 + rnd() * 40, ang = -1.2 + rnd() * .6;
+    g.strokeStyle = `hsla(${hue+10},100%,65%,${a*.7})`; g.lineWidth = r * .8; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(ang) * l, y + Math.sin(ang) * l); g.stroke();
+  }
+}
+</script>
+</body>
+</html>
